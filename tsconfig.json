@@ -1,0 +1,20 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "sourceMap": true,
+    "inlineSources": true,
+    "pretty": true,
+    "outDir": "./dist",
+    "baseUrl": "./lib",
+    "jsx": "react"
+  },
+  "include": [
+    "lib/**/*.ts",
+    "public/lib/**/*.ts*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

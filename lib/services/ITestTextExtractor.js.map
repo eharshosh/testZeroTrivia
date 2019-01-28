@@ -1,0 +1,1 @@
+{"version":3,"file":"ITestTextExtractor.js","sourceRoot":"","sources":["ITestTextExtractor.ts"],"names":[],"mappings":"","sourcesContent":["export interface ITestTextExtractor  {\r\n    extractQuestions() : Promise<string[]>;\r\n}\r\n"]}

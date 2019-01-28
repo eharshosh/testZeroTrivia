@@ -1,0 +1,1 @@
+{"version":3,"file":"questionOption.js","sourceRoot":"","sources":["questionOption.ts"],"names":[],"mappings":";;AAAA,MAAa,cAAc;CAG1B;AAHD,wCAGC","sourcesContent":["export class QuestionOption {\r\n    isCorrect: boolean;\r\n    text: string\r\n}\r\n"]}

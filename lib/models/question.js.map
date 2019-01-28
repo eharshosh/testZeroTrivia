@@ -1,0 +1,1 @@
+{"version":3,"file":"question.js","sourceRoot":"","sources":["question.ts"],"names":[],"mappings":";;AAEA,MAAa,QAAQ;CAIpB;AAJD,4BAIC","sourcesContent":["import {QuestionOption} from \"./questionOption\";\r\n\r\nexport class Question {\r\n    questionNumber: number;\r\n    text: string;\r\n    options: QuestionOption[]\r\n}\r\n"]}
