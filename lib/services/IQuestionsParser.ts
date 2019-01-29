@@ -1,5 +1,5 @@
-import { Question } from "../models/question";
+import { IQuestion } from "../models/IQuestion";
 
 export interface IQuestionsParser {
-    parse(questions: string[]): Question[];
+    parse(questions: string[]): IQuestion[];
 }

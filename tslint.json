@@ -5,6 +5,7 @@
       "jsx-wrap-multiline": false,
       "ordered-imports": true,
       "prefer-template": true,
-      "no-console": false
+      "no-console": false,
+      "no-submodule-imports": false
     }
   }

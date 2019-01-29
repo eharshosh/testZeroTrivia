@@ -8,7 +8,7 @@
     "pretty": true,
     "outDir": "./dist",
     "baseUrl": "./lib",
-    "jsx": "react"
+    "jsx": "react",    
   },
   "include": [
     "lib/**/*.ts",

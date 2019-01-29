@@ -1,16 +1,16 @@
 import * as React from "react";
-import { SingleQuestion } from "./single-question";
+import { SingleQuestion } from "./SingleQuestion";
 
 export class QuestionsList extends React.PureComponent {
-    state = { questions: null };
+    public state = { questions: null };
 
-    async componentWillMount(): Promise<void> {
-        const response = await fetch('/questions');
+    public async componentWillMount(): Promise<void> {
+        const response = await fetch("/questions");
         const questions = await response.json();
         this.setState({ questions });
     }
 
-    render() {
+    public render() {
         if (!this.state.questions) {
             return null;
         }
