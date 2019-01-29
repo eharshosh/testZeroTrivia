@@ -1,5 +1,5 @@
 import * as express from "express";
-import * as questionsController from "./controllers/questions.controller";
+import * as routerService from "./controllers/router.service";
 
 serve();
 
@@ -8,7 +8,7 @@ function setupStaticFiles(app: express.Application) {
     app.use(express.static('public'));
 }
 function setupControllers(app: express.Application) {
-    questionsController.setup(app);
+    routerService.setup(app);
 }
 
 function serve() {

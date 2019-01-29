@@ -1,0 +1,11 @@
+// Place your key bindings in this file to overwrite the defaults
+[
+    {
+        "key": "ctrl+alt+l",
+        "command": "tslint.fixAllProblems"
+    },
+    {
+        "key": "ctrl+shift+c ctrl+shift+t",
+        "command": "tslint.createConfig"
+    }
+]

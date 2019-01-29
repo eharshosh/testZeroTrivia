@@ -19,12 +19,16 @@
     "nodemon": "^1.18.9",
     "source-map-loader": "^0.2.4",
     "ts-node": "^8.0.2",
+    "tslint": "5.12.1",
+    "tslint-react": "^3.6.0",
     "typescript": "^3.2.4",
+    "typescript-formatter": "^7.2.2",
     "webpack": "^4.29.0",
     "webpack-cli": "^3.2.1"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && webpack",
+    "watch": "webpack --watch",
     "dev": "ts-node ./lib/server.ts",
     "start": "nodemon ./dist/server.js",
     "prod": "npm run build && npm run start"

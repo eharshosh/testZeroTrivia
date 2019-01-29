@@ -1,4 +1,4 @@
-import {QuestionOption} from "./questionOption";
+import { QuestionOption } from "./questionOption";
 
 export class Question {
     questionNumber: number;

@@ -1,6 +1,6 @@
-import {Question} from "../models/question";
-import {QuestionOption} from "../models/questionOption";
-import {IQuestionsParser} from "./IQuestionsParser";
+import { Question } from "../models/question";
+import { QuestionOption } from "../models/questionOption";
+import { IQuestionsParser } from "./IQuestionsParser";
 
 export class defaultQuestionsParser implements IQuestionsParser {
     parse(questions: string[]): Question[] {
@@ -11,7 +11,7 @@ export class defaultQuestionsParser implements IQuestionsParser {
         return result;
     }
 
-    private static parseQuestion(questionText) : Question {
+    private static parseQuestion(questionText): Question {
         const [questionNumberLine, text, ...options] = questionText.split('\n');
         const questionNumber = parseInt(questionNumberLine.match(/שאלה מספר (\d+)/)[1]);
         return {
@@ -21,7 +21,7 @@ export class defaultQuestionsParser implements IQuestionsParser {
         };
     }
 
-    private static parseQuestionOption(optionText: string) : QuestionOption {
+    private static parseQuestionOption(optionText: string): QuestionOption {
         const match = optionText.match(/(\d+)\. (.*)/);
         if (match) {
             // noinspection JSUnusedLocalSymbols

@@ -1,13 +1,13 @@
 import * as React from "react";
-import {SingleQuestion} from "./single-question";
+import { SingleQuestion } from "./single-question";
 
 export class QuestionsList extends React.PureComponent {
-    state = {questions: null};
+    state = { questions: null };
 
     async componentWillMount(): Promise<void> {
         const response = await fetch('/questions');
         const questions = await response.json();
-        this.setState({questions});
+        this.setState({ questions });
     }
 
     render() {
@@ -15,7 +15,7 @@ export class QuestionsList extends React.PureComponent {
             return null;
         }
         return this.state.questions.map((question, index) =>
-            <SingleQuestion key={index} question={question}/>);
+            <SingleQuestion key={index} question={question} />);
     }
 }
 

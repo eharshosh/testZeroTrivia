@@ -1,3 +1,3 @@
-export interface ITestTextExtractor  {
-    extractQuestions() : Promise<string[]>;
+export interface ITestTextExtractor {
+    extractQuestions(): Promise<string[]>;
 }

@@ -1,10 +1,10 @@
-import {ITestTextExtractor} from "./ITestTextExtractor";
+import { ITestTextExtractor } from "./ITestTextExtractor";
 import * as pdf from 'pdf-parse';
 export class PdfExtractor implements ITestTextExtractor {
-    public constructor(private fileStream: Buffer){}
+    public constructor(private fileStream: Buffer) { }
 
-    async extractQuestions() : Promise<string[]> {
-        const {text} = await pdf(this.fileStream);
+    async extractQuestions(): Promise<string[]> {
+        const { text } = await pdf(this.fileStream);
         const tokens: RegExpExecArray[] = [];
         let result;
         const exp = /\d+ מספר שאלה/g;
@@ -19,21 +19,21 @@ export class PdfExtractor implements ITestTextExtractor {
         return questions.map(PdfExtractor.fixRtlWordOrder);
     }
 
-    private static fixRtlWordOrder(questionText: string) : string {
+    private static fixRtlWordOrder(questionText: string): string {
         const result = [];
-        for (let line of questionText.split('\n')){
+        for (let line of questionText.split('\n')) {
             const reversedWords = line.split(' ').reverse();
             const questionOptionsMatch = reversedWords[0].match(/^(.*)\.(\d)$/);
             if (questionOptionsMatch) {
                 reversedWords[0] = `${questionOptionsMatch[2]}. ${questionOptionsMatch[1]}`;
             }
 
-            const questionTitleMatch = reversedWords[reversedWords.length-1].match(/:(.*)$/);
+            const questionTitleMatch = reversedWords[reversedWords.length - 1].match(/:(.*)$/);
             if (questionTitleMatch) {
                 if (!questionTitleMatch[1]) {
                     continue;
                 }
-                reversedWords[reversedWords.length-1] = `${questionTitleMatch[1]}:`;
+                reversedWords[reversedWords.length - 1] = `${questionTitleMatch[1]}:`;
             }
 
             result.push(reversedWords.join(' '));
