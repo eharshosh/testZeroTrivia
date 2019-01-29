@@ -1,17 +1,18 @@
 import * as React from "react";
 
-
 export class SingleQuestion extends React.PureComponent<{ question: any }> {
-    render() {
+    public render() {
         const { text, questionNumber, options } = this.props.question;
         return <div>
             <h3>שאלה מספר {questionNumber}</h3>
             <h4>{text}</h4>
-            {shuffleArray(options).map((option, index) =>
-                <h5 key={index} style={{ fontWeight: option.isCorrect ? 'normal' : 'bold' }}>
+            {
+                shuffleArray(options).map((option, index) =>
+                    <h5 key={index} style={{ fontWeight: option.isCorrect ? "normal" : "bold" }}>
                     {index + 1}. {option.text}
-                </h5>)}
-        </div>
+                    </h5>)
+            }
+        </div>;
     }
 }
 
@@ -23,7 +24,6 @@ function shuffleArray(src) {
     }
     return result;
 }
-
 
 /*
 interface HelloProps { compiler: string; framework: string; }
