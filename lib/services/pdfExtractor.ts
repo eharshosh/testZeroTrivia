@@ -13,10 +13,9 @@ export class PdfExtractor implements ITestTextExtractor {
 
             const questionTitleMatch = reversedWords[reversedWords.length - 1].match(/:(.*)$/);
             if (questionTitleMatch) {
-                if (!questionTitleMatch[1]) {
-                    continue;
+                if (questionTitleMatch[1]) {
+                    reversedWords[reversedWords.length - 1] = `${questionTitleMatch[1]}:`;
                 }
-                reversedWords[reversedWords.length - 1] = `${questionTitleMatch[1]}:`;
             }
 
             result.push(reversedWords.join(" "));
