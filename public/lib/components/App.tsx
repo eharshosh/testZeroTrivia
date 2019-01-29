@@ -1,14 +1,12 @@
-import {List, Map} from "immutable";
 import * as React from "react";
 import { connect } from "react-redux";
-import { IQuestion } from "../../../lib/models/IQuestion";
+import { bindActionCreators } from "redux";
+import { Loader } from "semantic-ui-react";
 import * as actions from "../redux/actions";
-import * as constants from "../redux/constants";
 import * as selectors from "../redux/selectors";
-import { SingleQuestion } from "./SingleQuestion";
+import QuestionsList from "./QuestionsList";
 
 interface IAppProps {
-    questions: List<IQuestion>;
     actions: { fetchQuestions: () => void };
     questionsFetched: boolean;
  }
@@ -22,20 +20,17 @@ class App extends React.PureComponent<IAppProps> {
     }
 
     public render() {
-        return this.props.questions.map((question, index) =>
-        <SingleQuestion
-            key={index}
-            question={question}
-        />);
+        if (!this.props.questionsFetched) {
+            return <Loader active={true} as="div" size="huge" />;
+        }
+        return <QuestionsList />;
     }
 }
 
 const mapStateToProps = (state, ownProps) => ({
-    questions: selectors.getQuestionsList(state),
     questionsFetched: selectors.questionsFetched(state),
 });
-
-const mapDispatchToProps = { ...actions };
-
-const connectToStore = connect(mapStateToProps, mapDispatchToProps);
-export default connectToStore(App);
+const mapDispatchToProps = (dispatch) => ({
+    actions: bindActionCreators({...actions}, dispatch),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(App);

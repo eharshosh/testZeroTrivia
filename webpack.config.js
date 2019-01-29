@@ -9,18 +9,26 @@ module.exports = {
   devtool: "source-map",
 
   resolve: {
-    // Add '.ts' and '.tsx' as resolvable extensions.
-    extensions: [".ts", ".tsx", ".js", ".json"]
+    extensions: [".ts", ".tsx", ".js", ".json", ".less"]
   },
 
   module: {
-    rules: [
-      // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
+    rules: [      
       { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
-
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-      { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
-    ]
+      { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
+      // less loader
+      { 
+        test: /\.less$/, 
+        use: [{
+          loader: 'style-loader' // creates style nodes from JS strings
+        }, {
+          loader: 'css-loader' // translates CSS into CommonJS
+        }, {
+          loader: 'less-loader' // compiles Less to CSS
+        }]
+      }
+    ]    
   },
 
   // When importing a module whose path matches one of the following, just

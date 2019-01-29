@@ -1,18 +1,22 @@
+import {Record} from "immutable";
 import * as React from "react";
-
-export class SingleQuestion extends React.PureComponent<{ question: any }> {
+import { IQuestion } from "../../../lib/models/IQuestion";
+export class SingleQuestion extends React.PureComponent<{ question: Record<IQuestion> }> {
     public render() {
-        const { text, questionNumber, options } = this.props.question;
+        const { text, questionNumber, options } = this.props.question.toJS();
+        const shuffledOptions = shuffleArray(options);
         return <div>
             <h3>שאלה מספר {questionNumber}</h3>
             <h4>{text}</h4>
-            {
-                shuffleArray(options).map((option, index) =>
-                    <h5 key={index} style={{ fontWeight: option.isCorrect ? "normal" : "bold" }}>
-                    {index + 1}. {option.text}
-                    </h5>)
-            }
+            {shuffledOptions.map(this.renderQuestion)}
         </div>;
+    }
+
+    private renderQuestion(option, index) {
+        return (
+        <h5 key={index} style={{ fontWeight: option.isCorrect ? "normal" : "bold" }}>
+            {index + 1}. {option.text}
+        </h5>);
     }
 }
 
@@ -24,9 +28,3 @@ function shuffleArray(src) {
     }
     return result;
 }
-
-/*
-interface HelloProps { compiler: string; framework: string; }
-
-const Hello = (props: HelloProps) => <h1>Hello from {props.compiler} and {props.framework}!</h1>
- */
