@@ -3,13 +3,14 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import { Button } from "semantic-ui-react";
-import actions from "../redux/actions";
+import actions, {IAppActions} from "../redux/actions";
 import * as selectors from "../redux/selectors";
+import * as constants from "../redux/constants";
 import QuestionsList from "./QuestionsList";
 
 interface IQuestionsListProps {
-    actions: { beginTest: () => void };
-    testStarted: boolean;
+    actions: IAppActions;
+    testState: string;
     correctAnswers: number;
     totalGrade: number;
  }
@@ -17,18 +18,33 @@ interface IQuestionsListProps {
 class Test extends React.PureComponent<IQuestionsListProps> {
 
     public render() {
+        const {testState} = this.props;
         return <div>
-        {this.props.correctAnswers && <p>תשובות נכונות: {this.props.correctAnswers}</p>}
-        {this.props.totalGrade && <p>ציון סופי: {Math.floor(this.props.totalGrade)}</p>}
-        {!this.props.testStarted && <Button onClick={this.props.actions.beginTest}>התחל מבחן</Button>}
-        {this.props.testStarted && <QuestionsList />}
+            <div className="test-toolbar-container">
+                {testState !== constants.TEST_STATE_STARTED &&
+                <Button onClick={this.props.actions.beginTest}>התחל מבחן</Button>
+                }
+                {testState === constants.TEST_STATE_STARTED &&
+                <Button onClick={this.props.actions.endTest} className="end-test-button">
+                    סיום
+                </Button>}
+                {testState === constants.TEST_STATE_ENDED &&
+                <span className="test-summary">
+                  <span>תשובות נכונות: {this.props.correctAnswers}</span>&nbsp;,
+                  <span>ציון סופי: {Math.floor(this.props.totalGrade)}</span>
+                </span>
+                }
+            </div>
+            {testState === constants.TEST_STATE_STARTED &&
+            <QuestionsList/>
+            }
         </div>;
     }
 }
 
 const mapStateToProps = (state, ownProps) => ({
     correctAnswers: selectors.correctAnswers(state),
-    testStarted: selectors.testStarted(state),
+    testState: selectors.testState(state),
     totalGrade: selectors.totalGrade(state),
 });
 const mapDispatchToProps = (dispatch) => ({

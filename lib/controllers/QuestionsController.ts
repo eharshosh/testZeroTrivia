@@ -13,7 +13,7 @@ export function handlers(): IRequestHandlerConfig[] {
 }
 
 async function getQuestions(req: express.Request, res: express.Response, next: express.NextFunction) {
-    const dataBuffer = fs.readFileSync("C:\\Users\\ehars_000\\Downloads\\__מבחן בתזונה לתלמידי סיעוד מועד א_0_.pdf");
+    const dataBuffer = fs.readFileSync("test.pdf");
     const extractor = new PdfExtractor(dataBuffer);
     const extractedQuestions = await extractor.extractQuestions();
     const parser = new DefaultQuestionsParser();

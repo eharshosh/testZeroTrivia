@@ -4,8 +4,7 @@ import * as constants from "../constants";
 const initialState = fromJS({
     [constants.QUESTIONS_FETCHED]: false,
     [constants.QUESTIONS]: List(),
-    [constants.CURRENTLY_DISPLAYED_QUESTION_INDEX]: 0,
-    [constants.TEST_STARTED]: false,
+    [constants.TEST_STATE]: constants.TEST_STATE_NOT_STARTED,
     [constants.USER_ANSWERS]: {},
     [constants.TOTAL_GRADE]: null,
     [constants.CORRECT_ANSWERS]: null,
@@ -18,12 +17,8 @@ export default function(state: Map<any, any> = initialState, action) {
       return state.set(constants.QUESTIONS_FETCHED, true)
                   .set(constants.QUESTIONS, fromJS(shuffled));
     }
-    case constants.CHANGE_SHOWN_QUESTION_INDEX: {
-      return state.set(constants.CURRENTLY_DISPLAYED_QUESTION_INDEX, action.index);
-    }
     case constants.BEGIN_TEST: {
-      return state.set(constants.CURRENTLY_DISPLAYED_QUESTION_INDEX, 0)
-                  .set(constants.TEST_STARTED, true)
+      return state.set(constants.TEST_STATE, constants.TEST_STATE_STARTED)
                   .set(constants.USER_ANSWERS, List());
     }
     case constants.MARK_USER_ANSWER: {
@@ -36,7 +31,7 @@ export default function(state: Map<any, any> = initialState, action) {
         const correctAnswerIndex = question.get("options").findIndex((option) => option.get("isCorrect"));
         return userAnswer === correctAnswerIndex;
       }).size;
-      return state.set(constants.TEST_STARTED, false)
+      return state.set(constants.TEST_STATE, constants.TEST_STATE_ENDED)
                   .set(constants.CORRECT_ANSWERS, correctAnswersCount)
                   .set(constants.TOTAL_GRADE, correctAnswersCount / (questions.size + 1) * 100);
     }

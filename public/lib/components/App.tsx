@@ -22,7 +22,7 @@ class App extends React.PureComponent<IAppProps> {
 
     public render() {
         return (
-            <div className="mainContainer">
+            <div className="main-container">
                 {this.props.questionsFetched ? <Test /> : <Loader active={true} as="div" size="huge" />}
             </div>
         );
