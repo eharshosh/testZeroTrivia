@@ -1,6 +1,7 @@
-import { RequestHandler } from "express-serve-static-core";
+import * as express from "express";
+
 export interface IRequestHandlerConfig {
     url: string;
-    target: RequestHandler;
+    target: express.RequestHandler;
     method: "get" | "post" | "delete" | "put";
 }

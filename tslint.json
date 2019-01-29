@@ -4,5 +4,7 @@
       // override tslint-react rules here
       "jsx-wrap-multiline": false,
       "ordered-imports": true,
+      "prefer-template": true,
+      "no-console": false
     }
   }

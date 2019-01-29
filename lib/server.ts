@@ -1,14 +1,14 @@
 import * as express from "express";
-import * as routerService from "./controllers/router.service";
+import * as routerService from "./controllers/RouterSetup";
 
 serve();
 
 function setupStaticFiles(app: express.Application) {
-    app.use('/script', express.static('dist/public/lib'));
-    app.use(express.static('public'));
+    app.use("/script", express.static("dist/public/lib"));
+    app.use(express.static("public"));
 }
 function setupControllers(app: express.Application) {
-    routerService.setup(app);
+    routerService.setupRoutes(app);
 }
 
 function serve() {
