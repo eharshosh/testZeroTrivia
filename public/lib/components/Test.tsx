@@ -10,22 +10,26 @@ import QuestionsList from "./QuestionsList";
 interface IQuestionsListProps {
     actions: { beginTest: () => void };
     testStarted: boolean;
+    correctAnswers: number;
+    totalGrade: number;
  }
 
 class Test extends React.PureComponent<IQuestionsListProps> {
 
     public render() {
-        if (!this.props.testStarted) {
-            return(<Button onClick={this.props.actions.beginTest}>
-                    התחל מבחן
-                </Button>);
-        }
-        return <QuestionsList />;
+        return <div>
+        {this.props.correctAnswers && <p>תשובות נכונות: {this.props.correctAnswers}</p>}
+        {this.props.totalGrade && <p>ציון סופי: {Math.floor(this.props.totalGrade)}</p>}
+        {!this.props.testStarted && <Button onClick={this.props.actions.beginTest}>התחל מבחן</Button>}
+        {this.props.testStarted && <QuestionsList />}
+        </div>;
     }
 }
 
 const mapStateToProps = (state, ownProps) => ({
+    correctAnswers: selectors.correctAnswers(state),
     testStarted: selectors.testStarted(state),
+    totalGrade: selectors.totalGrade(state),
 });
 const mapDispatchToProps = (dispatch) => ({
     actions: bindActionCreators({...actions}, dispatch),

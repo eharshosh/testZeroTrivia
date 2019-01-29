@@ -32,6 +32,7 @@ class QuestionsList extends React.PureComponent<IQuestionsListProps> {
                     <SingleQuestion
                         question={this.props.questions.get(this.props.currentQuestionIndex)}
                         onSelectAnswer={this.onSelectAnswer}
+                        onEndTest={this.props.actions.endTest}
                         selectedAnswer={this.props.answers.get(this.props.currentQuestionIndex)}
                     />
                 </div>

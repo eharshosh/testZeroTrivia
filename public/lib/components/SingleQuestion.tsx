@@ -8,6 +8,7 @@ interface ISingleQuestionProps {
     question: Record<IQuestion>;
     selectedAnswer: number;
     onSelectAnswer: (answerIndex: number) => void;
+    onEndTest: () => void;
 }
 
 interface ISingleQuestionState {
@@ -49,6 +50,9 @@ export class SingleQuestion extends React.PureComponent<ISingleQuestionProps, IS
                 </Button>
                 <Button onClick={this.onShowCorrectAnswer}>
                     הצג תשובה נכונה
+                </Button>
+                <Button onClick={this.props.onEndTest}>
+                    סיום
                 </Button>
             </div>
         </div>;
