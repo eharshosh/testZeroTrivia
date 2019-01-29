@@ -2,9 +2,10 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { Loader } from "semantic-ui-react";
-import * as actions from "../redux/actions";
+import actions from "../redux/actions";
 import * as selectors from "../redux/selectors";
-import QuestionsList from "./QuestionsList";
+import "../styles.less";
+import Test from "./Test";
 
 interface IAppProps {
     actions: { fetchQuestions: () => void };
@@ -20,10 +21,11 @@ class App extends React.PureComponent<IAppProps> {
     }
 
     public render() {
-        if (!this.props.questionsFetched) {
-            return <Loader active={true} as="div" size="huge" />;
-        }
-        return <QuestionsList />;
+        return (
+            <div className="mainContainer">
+                {this.props.questionsFetched ? <Test /> : <Loader active={true} as="div" size="huge" />}
+            </div>
+        );
     }
 }
 

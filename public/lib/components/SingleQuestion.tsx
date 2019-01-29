@@ -1,30 +1,80 @@
+import classNames from "classnames";
 import {Record} from "immutable";
 import * as React from "react";
+import { Button } from "semantic-ui-react";
 import { IQuestion } from "../../../lib/models/IQuestion";
-export class SingleQuestion extends React.PureComponent<{ question: Record<IQuestion> }> {
+
+interface ISingleQuestionProps {
+    question: Record<IQuestion>;
+    selectedAnswer: number;
+    onSelectAnswer: (answerIndex: number) => void;
+}
+
+interface ISingleQuestionState {
+    showCorrectAnswer: boolean;
+    testCurrentAnswer: boolean;
+}
+
+export class SingleQuestion extends React.PureComponent<ISingleQuestionProps, ISingleQuestionState> {
+
+    constructor(props) {
+        super  (props);
+        this.state = {
+            showCorrectAnswer: false,
+            testCurrentAnswer: false,
+        };
+    }
+
+    public componentWillReceiveProps(nextProps: Readonly<ISingleQuestionProps>, nextContext: any) {
+        if (nextProps.question !== this.props.question
+            || nextProps.selectedAnswer !== this.props.selectedAnswer) {
+            this.setState({
+                showCorrectAnswer: false,
+                testCurrentAnswer: false,
+            });
+        }
+    }
+
     public render() {
         const { text, questionNumber, options } = this.props.question.toJS();
-        const shuffledOptions = shuffleArray(options);
         return <div>
             <h3>שאלה מספר {questionNumber}</h3>
             <h4>{text}</h4>
-            {shuffledOptions.map(this.renderQuestion)}
+            <div className="answers">
+                {options.map((option, index) => this.renderAnswer(option, index))}
+            </div>
+            <div className="buttons">
+                <Button disabled={isNaN(this.props.selectedAnswer)} onClick={this.onTestAnswer}>
+                    בדיקה
+                </Button>
+                <Button onClick={this.onShowCorrectAnswer}>
+                    הצג תשובה נכונה
+                </Button>
+            </div>
         </div>;
     }
 
-    private renderQuestion(option, index) {
-        return (
-        <h5 key={index} style={{ fontWeight: option.isCorrect ? "normal" : "bold" }}>
-            {index + 1}. {option.text}
-        </h5>);
+    private onTestAnswer = () => {
+        this.setState({ testCurrentAnswer: true });
     }
-}
 
-function shuffleArray(src) {
-    const result = [...src];
-    for (let i = result.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [result[i], result[j]] = [result[j], result[i]];
+    private onShowCorrectAnswer = () => {
+        this.setState({ showCorrectAnswer: true });
     }
-    return result;
+
+    private renderAnswer(option, index) {
+        const isSelected  = this.props.selectedAnswer === index;
+        const classes = classNames(["answer"], {
+            correct: option.isCorrect &&
+                (this.state.showCorrectAnswer || (this.state.testCurrentAnswer && isSelected)),
+            selected: isSelected,
+            wrong: this.state.testCurrentAnswer && !option.isCorrect && isSelected,
+        });
+        const onClick = () => this.props.onSelectAnswer(index);
+        return (
+            <div key={index} className={classes} onClick={onClick}>
+                {index + 1}) {option.text}
+            </div>
+        );
+    }
 }
