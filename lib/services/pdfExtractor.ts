@@ -5,16 +5,16 @@ export class PdfExtractor implements ITestTextExtractor {
     private static fixRtlWordOrder(questionText: string): string {
         const result = [];
         for (const line of questionText.split("\n")) {
-            const reversedWords = line.split(" ").reverse();
+            const reversedWords = line.trim().split(" ").reverse();
             const questionOptionsMatch = reversedWords[0].match(/^(.*)\.(\d)$/);
             if (questionOptionsMatch) {
                 reversedWords[0] = `${questionOptionsMatch[2]}. ${questionOptionsMatch[1]}`;
             }
 
-            const questionTitleMatch = reversedWords[reversedWords.length - 1].match(/:(.*)$/);
-            if (questionTitleMatch) {
-                if (questionTitleMatch[1]) {
-                    reversedWords[reversedWords.length - 1] = `${questionTitleMatch[1]}:`;
+            const specialCharAtEndOfWordMatch = reversedWords[reversedWords.length - 1].match(/([:\?\."])(.*)$/);
+            if (specialCharAtEndOfWordMatch) {
+                if (specialCharAtEndOfWordMatch[1]) {
+                    reversedWords[reversedWords.length - 1] = `${specialCharAtEndOfWordMatch[2]}${specialCharAtEndOfWordMatch[1]}`;
                 }
             }
 

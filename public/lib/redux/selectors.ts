@@ -2,6 +2,7 @@ import * as constants from "./constants";
 
 export const questionsFetched = (state) => state.getIn([constants.QUESTIONS_BRANCH, constants.QUESTIONS_FETCHED]);
 export const uploadingFile = (state) => state.getIn([constants.QUESTIONS_BRANCH, constants.UPLOADING_FILE]);
+export const uploadError = (state) => state.getIn([constants.QUESTIONS_BRANCH, constants.UPLOAD_ERROR]);
 export const questionsList = (state) => state.getIn([constants.QUESTIONS_BRANCH, constants.QUESTIONS]);
 export const userAnswers = (state) => state.getIn([constants.QUESTIONS_BRANCH, constants.USER_ANSWERS]);
 export const testState = (state) =>

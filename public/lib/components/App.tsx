@@ -5,11 +5,13 @@ import * as selectors from "../redux/selectors";
 import "../styles.less";
 import Test from "./Test";
 import TestUploadForm from "./TestUploadForm";
+import UploadError from "./UploadError";
 import * as constants from '../redux/constants';
 
 interface IAppProps {
     questionsFetched: boolean;
     uploadingFile: boolean;
+    uploadError: string;
     testState: string;
  }
 
@@ -23,9 +25,11 @@ class App extends React.PureComponent<IAppProps> {
         return (
             <div className="main-container">
                 <div>
+                    {this.props.uploadError && <UploadError />}
                     {this.props.questionsFetched && <Test />}
-                    {showTestUploadForm && <TestUploadForm />}
+                    {showTestUploadForm && <TestUploadForm />}                    
                 </div>
+
             </div>
         );
     }
@@ -34,6 +38,7 @@ class App extends React.PureComponent<IAppProps> {
 const mapStateToProps = (state, ownProps) => ({
     questionsFetched: selectors.questionsFetched(state),
     uploadingFile: selectors.uploadingFile(state),
+    uploadError: selectors.uploadError(state),
     testState: selectors.testState(state),
 });
 

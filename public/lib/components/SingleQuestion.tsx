@@ -3,11 +3,13 @@ import {Record} from "immutable";
 import * as React from "react";
 import { Button } from "semantic-ui-react";
 import { IQuestion } from "../../../lib/models/IQuestion";
+import * as contants from '../redux/constants';
 
 interface ISingleQuestionProps {
     question: Record<IQuestion>;
     selectedAnswer: number;
     onSelectAnswer: (answerIndex: number) => void;
+    onToggleQuestionExclusion: () => void;
 }
 
 interface ISingleQuestionState {
@@ -36,7 +38,7 @@ export class SingleQuestion extends React.PureComponent<ISingleQuestionProps, IS
     }
 
     public render() {
-        const { text, questionNumber, options } = this.props.question.toJS();
+        const { text, questionNumber, options, excluded } = this.props.question.toJS();
         return <div className="single-question">
             <h3>שאלה מספר {questionNumber}</h3>
             <h4>{text}</h4>
@@ -50,6 +52,9 @@ export class SingleQuestion extends React.PureComponent<ISingleQuestionProps, IS
                 <Button onClick={this.onShowCorrectAnswer}>
                     הצג תשובה נכונה
                 </Button>
+                <Button onClick={this.props.onToggleQuestionExclusion} alt="אל תתיחס אל קיומה של שאלה זו בעת חישוב הציון">
+                    {excluded ? "אל תתעלם משאלה זו" : "התעלם משאלה זו"}
+                </Button>
             </div>
         </div>;
     }
@@ -61,7 +66,7 @@ export class SingleQuestion extends React.PureComponent<ISingleQuestionProps, IS
     private onShowCorrectAnswer = () => {
         this.setState({ showCorrectAnswer: true });
     }
-
+    
     private renderAnswer(option, index) {
         const isSelected  = this.props.selectedAnswer === index;
         const classes = classNames(["answer"], {

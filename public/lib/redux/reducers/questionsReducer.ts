@@ -3,11 +3,11 @@ import * as constants from "../constants";
 
 const initialState = fromJS({
     [constants.QUESTIONS_FETCHED]: false,
-    [constants.QUESTIONS]: List(),
+    [constants.QUESTIONS]: [],
     [constants.TEST_STATE]: constants.TEST_STATE_NOT_STARTED,
     [constants.USER_ANSWERS]: {},
     [constants.TOTAL_GRADE]: null,
-    [constants.CORRECT_ANSWERS]: null,
+    [constants.CORRECT_ANSWERS]: null
 });
 
 export default function(state: Map<any, any> = initialState, action) {
@@ -21,8 +21,15 @@ export default function(state: Map<any, any> = initialState, action) {
       const shuffled = action.questions.map(shuffleAnswers);
       return state.set(constants.QUESTIONS_FETCHED, true)
                   .set(constants.TEST_STATE, constants.TEST_STATE_STARTED)
+                  .set(constants.USER_ANSWERS, List())
                   .set(constants.UPLOADING_FILE, false)
-                  .set(constants.QUESTIONS, fromJS(shuffled));
+                  .set(constants.QUESTIONS, fromJS(shuffled))
+                  .delete(constants.UPLOAD_ERROR);
+    }
+    case constants.FETCH_QUESTIONS_ERROR: {
+      return state.set(constants.QUESTIONS_FETCHED, false)
+                  .set(constants.UPLOADING_FILE, false)
+                  .set(constants.UPLOAD_ERROR, action.message);
     }
     case constants.BEGIN_TEST: {
       return state.set(constants.TEST_STATE, constants.TEST_STATE_STARTED)
@@ -32,16 +39,24 @@ export default function(state: Map<any, any> = initialState, action) {
       return state.setIn([constants.USER_ANSWERS, action.questionIndex], action.answerIndex);
     }
     case constants.END_TEST: {
-      const questions = state.get(constants.QUESTIONS);
+      const questions = state.get(constants.QUESTIONS);      
       const correctAnswersCount = questions.filter((question, questionIndex) => {
+        if (question.get(constants.QUESTION_EXCLUDED)) {
+          return false;
+        }
         const userAnswer = state.getIn([constants.USER_ANSWERS, questionIndex]);
         const correctAnswerIndex = question.get("options").findIndex((option) => option.get("isCorrect"));
         return userAnswer === correctAnswerIndex;
       }).size;
+      const nonExcludedQuestions = questions.filter(question=> !question.get(constants.QUESTION_EXCLUDED));
       return state.set(constants.TEST_STATE, constants.TEST_STATE_ENDED)
                   .set(constants.CORRECT_ANSWERS, correctAnswersCount)
-                  .set(constants.TOTAL_GRADE, correctAnswersCount / (questions.size + 1) * 100);
+                  .set(constants.TOTAL_GRADE, correctAnswersCount / (nonExcludedQuestions.size + 1) * 100);
     }
+    case constants.TOGGLE_QUESTION_EXCLUSION: {
+      const currentValue = state.getIn([constants.QUESTIONS, action.questionIndex, constants.QUESTION_EXCLUDED]);
+      return state.setIn([constants.QUESTIONS, action.questionIndex, constants.QUESTION_EXCLUDED], !currentValue);
+    }    
     default:
       return state;
   }

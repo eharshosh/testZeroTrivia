@@ -11,6 +11,7 @@ export class DefaultQuestionsParser implements IQuestionsParser {
             options: options.map(DefaultQuestionsParser.parseQuestionOption).filter((o) => o !== null),
             questionNumber,
             text: text.trim(),
+            excluded: false
         };
     }
 

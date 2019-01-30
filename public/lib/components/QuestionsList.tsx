@@ -25,6 +25,7 @@ class QuestionsList extends React.PureComponent<IQuestionsListProps> {
                         question={question}
                         onSelectAnswer={(answerIndex)=>
                             this.props.actions.markUserAnswer(questionIndex, answerIndex)}
+                        onToggleQuestionExclusion={()=> this.props.actions.toggleQuestionExclusion(questionIndex)}                        
                         selectedAnswer={this.props.answers.get(questionIndex)}
                     />)
                 }
