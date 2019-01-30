@@ -1,7 +1,5 @@
 import * as express from "express";
 import * as busboy from 'connect-busboy';
-import * as memoryStreams from 'memory-streams';
-import * as fs from 'fs';
 import { DefaultQuestionsParser } from "../services/DefaultQuestionsParser";
 import { PdfExtractor } from "../services/PdfExtractor";
 import { IRequestHandlerConfig } from "./IRequestHandlerConfig";

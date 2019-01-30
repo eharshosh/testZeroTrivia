@@ -6,7 +6,7 @@ export class DefaultQuestionsParser implements IQuestionsParser {
 
     private static parseQuestion(questionText): IQuestion {
         const [questionNumberLine, text, ...options] = questionText.split("\n");
-        const questionNumber: number = parseInt(questionNumberLine.match(/שאלה מספר (\d+)/)[1], 10);
+        const questionNumber: number = parseInt(questionNumberLine.match(/שאלה מספר\s+(\d+)/)[1], 10);
         return {
             options: options.map(DefaultQuestionsParser.parseQuestionOption).filter((o) => o !== null),
             questionNumber,

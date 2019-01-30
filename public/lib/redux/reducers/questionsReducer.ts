@@ -12,9 +12,16 @@ const initialState = fromJS({
 
 export default function(state: Map<any, any> = initialState, action) {
   switch (action.type) {
+    case constants.FETCH_QUESTIONS: {
+      return state
+        .set(constants.QUESTIONS_FETCHED, false)
+        .set(constants.UPLOADING_FILE, true);
+    }
     case constants.FETCH_QUESTIONS_SUCCESS: {
       const shuffled = action.questions.map(shuffleAnswers);
       return state.set(constants.QUESTIONS_FETCHED, true)
+                  .set(constants.TEST_STATE, constants.TEST_STATE_STARTED)
+                  .set(constants.UPLOADING_FILE, false)
                   .set(constants.QUESTIONS, fromJS(shuffled));
     }
     case constants.BEGIN_TEST: {

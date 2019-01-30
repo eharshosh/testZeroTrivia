@@ -22,8 +22,10 @@ class App extends React.PureComponent<IAppProps> {
             || this.props.testState === constants.TEST_STATE_ENDED;
         return (
             <div className="main-container">
-                {this.props.questionsFetched && <Test />}
-                {showTestUploadForm && <TestUploadForm />}
+                <div>
+                    {this.props.questionsFetched && <Test />}
+                    {showTestUploadForm && <TestUploadForm />}
+                </div>
             </div>
         );
     }

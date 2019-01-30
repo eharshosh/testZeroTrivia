@@ -27,7 +27,7 @@ export class PdfExtractor implements ITestTextExtractor {
     public async extractQuestions(): Promise<string[]> {
         const { text } = await pdf(this.fileStream);
         const tokens: RegExpExecArray[] = [];
-        const exp = /\d+ מספר שאלה/g;
+        const exp = /\d+\s+מספר שאלה/g;
         let result = exp.exec(text);
         while (result !== null) {
             tokens.push(result);
