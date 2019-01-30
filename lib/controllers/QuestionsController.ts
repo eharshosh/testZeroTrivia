@@ -1,7 +1,7 @@
 import * as express from "express";
 import * as busboy from 'connect-busboy';
 import { DefaultQuestionsParser } from "../services/DefaultQuestionsParser";
-import { PdfExtractor } from "../services/PdfExtractor";
+import { PdfTextExtractor } from "../services/PdfTextExtractor";
 import { IRequestHandlerConfig } from "./IRequestHandlerConfig";
 import IController from "./IController";
 
@@ -38,18 +38,18 @@ async function getQuestions(req: any, res: express.Response, next: express.NextF
         resolvePromise = resolve;
         rejectPromise = reject;
     });
-    if (req.busboy) {        
+    if (req.busboy) {
         req.busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
-            console.log('File: ' + filename + ', mimetype: ' + mimetype);                        
+            console.log('File: ' + filename + ', mimetype: ' + mimetype);
             file.on('data', function(data) {
                 dataBuffers.push(data);
             });
         })
         .on('finish', resolvePromise)
-        .on('error', rejectPromise);      
+        .on('error', rejectPromise);
     }
     await promise;
-    const extractor = new PdfExtractor(Buffer.concat(dataBuffers));
+    const extractor = new PdfTextExtractor(Buffer.concat(dataBuffers));
     const extractedQuestions = await extractor.extractQuestions();
     const parser = new DefaultQuestionsParser();
     res.json(parser.parse(extractedQuestions));

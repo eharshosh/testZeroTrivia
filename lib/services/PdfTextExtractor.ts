@@ -1,6 +1,6 @@
 import * as pdf from "pdf-parse";
 import { ITestTextExtractor } from "./ITestTextExtractor";
-export class PdfExtractor implements ITestTextExtractor {
+export class PdfTextExtractor implements ITestTextExtractor {
 
     private static fixRtlWordOrder(questionText: string): string {
         const result = [];
@@ -11,7 +11,7 @@ export class PdfExtractor implements ITestTextExtractor {
                 reversedWords[0] = `${questionOptionsMatch[2]}. ${questionOptionsMatch[1]}`;
             }
 
-            const specialCharAtEndOfWordMatch = reversedWords[reversedWords.length - 1].match(/([:\?\."])(.*)$/);
+            const specialCharAtEndOfWordMatch = reversedWords[reversedWords.length - 1].match(/^([:\?\."])(.*)$/);
             if (specialCharAtEndOfWordMatch) {
                 if (specialCharAtEndOfWordMatch[1]) {
                     reversedWords[reversedWords.length - 1] = `${specialCharAtEndOfWordMatch[2]}${specialCharAtEndOfWordMatch[1]}`;
@@ -38,6 +38,6 @@ export class PdfExtractor implements ITestTextExtractor {
             questions.push(text.substring(tokens[i].index, tokens[i + 1].index));
         }
         questions.push(text.substring(tokens[tokens.length - 1].index));
-        return questions.map(PdfExtractor.fixRtlWordOrder);
+        return questions.map(PdfTextExtractor.fixRtlWordOrder);
     }
 }

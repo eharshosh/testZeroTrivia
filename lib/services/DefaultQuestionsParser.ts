@@ -16,7 +16,7 @@ export class DefaultQuestionsParser implements IQuestionsParser {
     }
 
     private static parseQuestionOption(optionText: string): IQuestionOption {
-        const match = optionText.match(/(\d+)\. (.*)/);
+        const match = optionText.match(/(\d+)\.\s*(.*)/);
         if (match) {
             // noinspection JSUnusedLocalSymbols
             const [_, optionNumber, text] = match;

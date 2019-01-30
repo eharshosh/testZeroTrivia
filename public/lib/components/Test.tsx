@@ -20,7 +20,7 @@ class Test extends React.PureComponent<IQuestionsListProps> {
     public render() {
         const {testState} = this.props;
         return <div>
-            <div className="test-toolbar-container">                
+            <div className="test-toolbar-container">
                 {testState !== constants.TEST_STATE_STARTED &&
                 <Button onClick={this.props.actions.beginTest}>התחל מבחן</Button>
                 }
