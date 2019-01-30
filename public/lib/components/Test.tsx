@@ -4,8 +4,8 @@ import { bindActionCreators } from "redux";
 
 import { Button } from "semantic-ui-react";
 import actions, {AppActions} from "../redux/actions";
-import * as selectors from "../redux/selectors";
 import * as constants from "../redux/constants";
+import * as selectors from "../redux/selectors";
 import QuestionsList from "./QuestionsList";
 
 interface IQuestionsListProps {
@@ -20,7 +20,7 @@ class Test extends React.PureComponent<IQuestionsListProps> {
     public render() {
         const {testState} = this.props;
         return <div>
-            <div className="test-toolbar-container">
+            <div className="test-toolbar-container">                
                 {testState !== constants.TEST_STATE_STARTED &&
                 <Button onClick={this.props.actions.beginTest}>התחל מבחן</Button>
                 }
