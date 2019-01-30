@@ -1,6 +1,7 @@
 // store
 export const QUESTIONS_BRANCH = "QUESTIONS";
 export const QUESTIONS_FETCHED = "QUESTIONS_FETCHED";
+export const UPLOADING_FILE = "UPLOADING_FILE";
 export const QUESTIONS = "QUESTIONS";
 export const TEST_STATE = "TEST_STATE";
 export const TEST_STATE_STARTED = "TEST_STATE_STARTED";

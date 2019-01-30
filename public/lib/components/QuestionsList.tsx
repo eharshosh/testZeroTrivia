@@ -2,19 +2,17 @@ import {List, Map, Record} from "immutable";
 import * as React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
-import {Button, Pagination} from "semantic-ui-react";
 import { IQuestion } from "../../../lib/models/IQuestion";
-import AppActions, {IAppActions} from "../redux/actions";
+import appActions, {AppActions} from "../redux/actions";
 import * as selectors from "../redux/selectors";
 import "../styles.less";
 import { SingleQuestion } from "./SingleQuestion";
 
 interface IQuestionsListProps {
-    actions: IAppActions;
+    actions: AppActions;
     questions: List<Record<IQuestion>>;
     answers: Map<number, number>;
- }
+}
 
 class QuestionsList extends React.PureComponent<IQuestionsListProps> {
 
@@ -40,6 +38,6 @@ const mapStateToProps = (state, ownProps) => ({
     questions: selectors.questionsList(state),
 });
 const mapDispatchToProps = (dispatch) => ({
-    actions: bindActionCreators({...AppActions}, dispatch),
+    actions: bindActionCreators({...appActions}, dispatch),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(QuestionsList);

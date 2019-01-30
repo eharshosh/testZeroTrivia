@@ -1,29 +1,29 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import { Loader } from "semantic-ui-react";
-import actions from "../redux/actions";
 import * as selectors from "../redux/selectors";
 import "../styles.less";
 import Test from "./Test";
+import TestUploadForm from "./TestUploadForm";
+import * as constants from '../redux/constants';
 
 interface IAppProps {
-    actions: { fetchQuestions: () => void };
     questionsFetched: boolean;
+    uploadingFile: boolean;
+    testState: string;
  }
 
 class App extends React.PureComponent<IAppProps> {
-
-    public componentWillMount() {
-        if (!this.props.questionsFetched) {
-            this.props.actions.fetchQuestions();
-        }
-    }
-
     public render() {
+        if (this.props.uploadingFile) {
+            return <Loader active={true} as="div" size="huge" />;
+        }
+        const showTestUploadForm = !this.props.questionsFetched
+            || this.props.testState === constants.TEST_STATE_ENDED;
         return (
             <div className="main-container">
-                {this.props.questionsFetched ? <Test /> : <Loader active={true} as="div" size="huge" />}
+                {this.props.questionsFetched && <Test />}
+                {showTestUploadForm && <TestUploadForm />}
             </div>
         );
     }
@@ -31,8 +31,8 @@ class App extends React.PureComponent<IAppProps> {
 
 const mapStateToProps = (state, ownProps) => ({
     questionsFetched: selectors.questionsFetched(state),
+    uploadingFile: selectors.uploadingFile(state),
+    testState: selectors.testState(state),
 });
-const mapDispatchToProps = (dispatch) => ({
-    actions: bindActionCreators({...actions}, dispatch),
-});
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+
+export default connect(mapStateToProps)(App);

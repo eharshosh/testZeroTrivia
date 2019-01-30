@@ -4,7 +4,7 @@ import * as constants from "./constants";
 
 function* fetchQuestions(action) {
    try {
-      const questions = yield call(Api.fetchQuestions);
+      const questions = yield call(Api.fetchQuestions, action.file);
       yield put({type: constants.FETCH_QUESTIONS_SUCCESS, questions});
    } catch (e) {
       yield put({type: constants.FETCH_QUESTIONS_ERROR, message: e.message});

@@ -1,14 +1,18 @@
 import * as express from "express";
 import { IRequestHandlerConfig } from "./IRequestHandlerConfig";
-import * as questionsController from "./QuestionsController";
+import questionsController from "./QuestionsController";
+import IController from "./IController";
 
-const handlers: IRequestHandlerConfig[] = [
-    ...questionsController.handlers(),
+const controllers: IController[] = [
+    questionsController,
 ];
 
-export function setupRoutes(app: express.Application) {
-    for (const handler of handlers) {
-        app[handler.method](handler.url, wrapWithExceptionHandler(handler));
+export function init(app: express.Application) {
+    for (const controller of controllers) {
+        controller.init(app);
+        for (const handler of controller.getHandlers()) {
+            app[handler.method](handler.url, wrapWithExceptionHandler(handler));
+        }
     }
 }
 

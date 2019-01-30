@@ -1,5 +1,5 @@
 import * as express from "express";
-import * as routerService from "./controllers/RouterSetup";
+import * as controllersInitializer from "./controllers/Initializer";
 
 serve();
 
@@ -8,7 +8,7 @@ function setupStaticFiles(app: express.Application) {
     app.use(express.static("public"));
 }
 function setupControllers(app: express.Application) {
-    routerService.setupRoutes(app);
+    controllersInitializer.init(app);
 }
 
 function serve() {

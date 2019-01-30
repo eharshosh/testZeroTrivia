@@ -3,13 +3,13 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import { Button } from "semantic-ui-react";
-import actions, {IAppActions} from "../redux/actions";
+import actions, {AppActions} from "../redux/actions";
 import * as selectors from "../redux/selectors";
 import * as constants from "../redux/constants";
 import QuestionsList from "./QuestionsList";
 
 interface IQuestionsListProps {
-    actions: IAppActions;
+    actions: AppActions;
     testState: string;
     correctAnswers: number;
     totalGrade: number;
