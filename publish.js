@@ -2,7 +2,6 @@ const node_ssh = require('node-ssh');
 const deploymentTarget = require('./deployment.target.js');
 const chalk = require('chalk');
 
-
 async function sshLiveExec(ssh, command, options = {}) {
     await ssh.execCommand(command, {
         ...options,
@@ -10,7 +9,6 @@ async function sshLiveExec(ssh, command, options = {}) {
         onStderr: (chunk) => console.log(chulk.red(chunk.toString())),
     });
 }
-
 
 async function copyFiles(ssh, localDirPath, remoteDirPath) {    
     await sshLiveExec(ssh, 'cd ~');
@@ -57,4 +55,3 @@ async function main() {
 }
 
 main();
-
