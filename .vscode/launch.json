@@ -9,7 +9,17 @@
             "request": "launch",
             "name": "Launch Program",
             "program": "${workspaceFolder}/dist/server.js",
-            "cwd": "${workspaceFolder}/dist"
+            "cwd": "${workspaceFolder}/dist",
+            "env": {
+                "LISTENING_PORT": "8080"
+            }
+        },
+        {           
+            "type": "node",
+            "request": "launch",            
+            "name": "Publish",
+            "program": "${workspaceFolder}/publish.js",
+            "cwd": "${workspaceFolder}"
         }
     ]
 }

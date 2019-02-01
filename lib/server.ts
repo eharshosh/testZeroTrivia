@@ -5,7 +5,7 @@ import * as controllersInitializer from "./controllers/Initializer";
 serve();
 
 function setupStaticFiles(app: express.Application) {
-    app.use(express.static("public"));
+    app.use(express.static("static"));
 }
 
 function setupControllers(app: express.Application) {
@@ -16,5 +16,5 @@ function serve() {
     const app: express.Application = express();
     setupStaticFiles(app);
     setupControllers(app);
-    app.listen(8080);
+    app.listen(process.env.LISTENING_PORT);
 }
