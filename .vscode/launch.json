@@ -8,7 +8,8 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}\\dist\\lib\\server.js"
+            "program": "${workspaceFolder}/dist/server.js",
+            "cwd": "${workspaceFolder}/dist"
         }
     ]
 }

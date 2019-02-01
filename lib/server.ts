@@ -5,7 +5,6 @@ import * as controllersInitializer from "./controllers/Initializer";
 serve();
 
 function setupStaticFiles(app: express.Application) {
-    app.use("/script", express.static("dist/public/lib"));
     app.use(express.static("public"));
 }
 
