@@ -12,13 +12,25 @@ interface ITestUploadFormProps {
 
 class TestUploadForm extends React.PureComponent<ITestUploadFormProps> {
 
-    onDrop = (acceptedFiles, rejectedFiles) => {
-        this.props.actions.fetchQuestions(acceptedFiles[0]);
+    onDrop = (acceptedFiles: File[], rejectedFiles: File[]) => {
+        let file = acceptedFiles[0];
+        if (file) {
+            this.props.actions.fetchQuestions(file);
+        } else {
+            file = rejectedFiles[0];
+            if (file) {                
+                if (file.size < 50*1024*1024 && file.type == "") { // work-around android upload bug
+                    this.props.actions.fetchQuestions(file);
+                } else {
+                    this.props.actions.fetchQuestionsError("File not supported");
+                }
+            }
+        }
     };
 
     render() {
         return (
-            <DropZone onDrop={this.onDrop} accept={"application/pdf"}>
+            <DropZone onDrop={this.onDrop} accept={"application/pdf"} >
                 {({getRootProps, getInputProps, isDragActive}) => {
                     return (
                         <div

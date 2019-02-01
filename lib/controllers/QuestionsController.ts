@@ -29,7 +29,7 @@ class QuestionsController implements IController {
 
 export default new QuestionsController();
 
-async function getQuestions(req: any, res: express.Response, next: express.NextFunction) {
+async function getQuestions(req: express.Request, res: express.Response, next: express.NextFunction) {
     let resolvePromise : ()=> void;
     let rejectPromise : ()=> void;
     let dataBuffers: Buffer[] = [];
@@ -38,14 +38,18 @@ async function getQuestions(req: any, res: express.Response, next: express.NextF
         resolvePromise = resolve;
         rejectPromise = reject;
     });
-    if (req.busboy) {
-        req.busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
+    const busboy = (req as any).busboy;
+    if (busboy) {
+        busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
             console.log('File: ' + filename + ', mimetype: ' + mimetype);
             file.on('data', function(data) {
                 dataBuffers.push(data);
             });
         })
-        .on('finish', resolvePromise)
+        .on('field', function(key, value, keyTruncated, valueTruncated) {
+            console.log('Field: ' + key + ', mimetype: ' + value);
+        })
+         .on('finish', resolvePromise)
         .on('error', rejectPromise);
     }
     await promise;
