@@ -56,5 +56,6 @@ async function getQuestions(req: express.Request, res: express.Response, next: e
     const extractor = new PdfTextExtractor(Buffer.concat(dataBuffers));
     const extractedQuestions = await extractor.extractQuestions();
     const parser = new DefaultQuestionsParser();
-    res.json(parser.parse(extractedQuestions));
+    const parsed = parser.parse(extractedQuestions);
+    res.json(parsed);
 }

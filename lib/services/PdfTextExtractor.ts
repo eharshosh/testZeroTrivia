@@ -1,35 +1,15 @@
 import * as pdf from "pdfjs-dist";
+import * as fs from 'fs';
 
 import { ITestTextExtractor } from "./ITestTextExtractor";
 export class PdfTextExtractor implements ITestTextExtractor {
-
-    private static fixRtlWordOrder(questionText: string): string {
-        const result = [];
-        for (const line of questionText.split("\n")) {
-            const reversedWords = line.trim().split(" ").reverse();
-            const questionOptionsMatch = reversedWords[0].match(/^(.*)\.(\d)$/);
-            if (questionOptionsMatch) {
-                reversedWords[0] = `${questionOptionsMatch[2]}. ${questionOptionsMatch[1]}`;
-            }
-
-            const specialCharAtEndOfWordMatch = reversedWords[reversedWords.length - 1].match(/^([:\?\."])(.*)$/);
-            if (specialCharAtEndOfWordMatch) {
-                if (specialCharAtEndOfWordMatch[1]) {
-                    reversedWords[reversedWords.length - 1] = `${specialCharAtEndOfWordMatch[2]}${specialCharAtEndOfWordMatch[1]}`;
-                }
-            }
-
-            result.push(reversedWords.join(" "));
-        }
-        return result.join("\n");
-    }
+    
     public constructor(private fileStream: Buffer) { }
 
     public async extractQuestions(): Promise<string[]> {
-        const textWithMetadata = await extractPdfText(this.fileStream);
-        const text = textWithMetadata.toString();
+        const text = await extractPdfText(this.fileStream);
         const tokens: RegExpExecArray[] = [];
-        const exp = /\d+\s+מספר שאלה/g;
+        const exp = /\d+ שאלה מספר/g;
         let result = exp.exec(text);
         while (result !== null) {
             tokens.push(result);
@@ -40,7 +20,7 @@ export class PdfTextExtractor implements ITestTextExtractor {
             questions.push(text.substring(tokens[i].index, tokens[i + 1].index));
         }
         questions.push(text.substring(tokens[tokens.length - 1].index));
-        return questions.map(PdfTextExtractor.fixRtlWordOrder);
+        return questions;
     }
 }
 
@@ -50,13 +30,32 @@ async function extractPdfText(dataBuffer) {
     // script does not work).
     pdf.disableWorker = true;
     let doc = await pdf.getDocument(dataBuffer);
-    let ret = [];
+    let pages = [];
     for (var i = 1; i <= doc.numPages; i++) {
         const pageData = await doc.getPage(i);
         const pageText = await render_page(pageData);
-        ret.push(pageText);
+        pages.push(pageText);
     }
     doc.destroy();
+    let ret = '';
+
+    for (const page of pages) {
+        for (const line of page) {
+            let phrase = {words: [], dir: line[0].dir };
+            let linePhrases = [phrase];            
+            for (const word of line) {
+                if (word.dir !== phrase.dir && word.str.length > 1) {                    
+                    phrase = {words: [word.str], dir: word.dir };
+                    linePhrases.push(phrase);
+                } else {
+                    phrase.words.push(word.str);
+                }                
+            }           
+            const words = linePhrases.map(ph=> ph.dir == "rtl" ? ph.words.reverse().join('') : ph.words.join(''));
+            const lineText = words.join('');
+            ret += lineText + "\n";
+        }
+    }
     return ret;
 }
 
@@ -66,19 +65,18 @@ async function render_page(pageData) {
         //replaces all occurrences of whitespace with standard spaces (0x20). The default value is `false`.
         normalizeWhitespace: true,
         //do not attempt to combine same line TextItem's. The default value is `false`.
-        disableCombineTextItems: false
+        disableCombineTextItems: true
     }
     const textContent = await pageData.getTextContent(render_options);
     let lastY, line = [];
-    const lines = [];
-    const itemTransform = (item, x, y) => ({text: item.str, x, y, page: pageData.pageIndex});
+    const lines = [];    
     for (let item of textContent.items) {
-        const [,,,, x, y] = item.transform;
+        const [,,,,, y] = item.transform;
         if (lastY == y || !lastY) {
-            line.push(itemTransform(item, x, y));
+            line.push(item);
         } else {
             lines.push(line);
-            line = [itemTransform(item, x, y)];
+            line = [item];
         }
         lastY = y;
     }

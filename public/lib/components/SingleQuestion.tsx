@@ -3,7 +3,6 @@ import {Record} from "immutable";
 import * as React from "react";
 import { Button } from "semantic-ui-react";
 import { IQuestion } from "../../../lib/models/IQuestion";
-import * as contants from '../redux/constants';
 
 interface ISingleQuestionProps {
     question: Record<IQuestion>;
@@ -78,7 +77,7 @@ export class SingleQuestion extends React.PureComponent<ISingleQuestionProps, IS
         const onClick = () => this.props.onSelectAnswer(index);
         return (
             <div key={index} className={classes} onClick={onClick}>
-                {index + 1}) {option.text}
+                <span>{option.text}</span>&nbsp;<span style={{float: "right"}}>({index + 1}</span>
             </div>
         );
     }
