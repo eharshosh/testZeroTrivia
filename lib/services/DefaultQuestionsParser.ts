@@ -15,7 +15,7 @@ export class DefaultQuestionsParser implements IQuestionsParser {
     private static parseQuestion(questionText): IQuestion {
         const [questionNumberLine, ...textAndOptions] = questionText.split("\n")        
         const questionNumber: number = parseInt(questionNumberLine.match(/(\d+)/)[1], 10);
-        const textLinesCount = textAndOptions.findIndex((line)=> line.endsWith(".1"));
+        const textLinesCount = textAndOptions.findIndex((line)=> line.startsWith("1 "));
         const text = textAndOptions.slice(0, textLinesCount).join('\n');
         const options = textAndOptions.slice(textLinesCount);
         return {
@@ -27,7 +27,7 @@ export class DefaultQuestionsParser implements IQuestionsParser {
     }
 
     private static parseQuestionOption(optionText: string): IQuestionOption {
-        const match = optionText.match(/(.*)\s*\.(\d+)/);
+        const match = optionText.match(/(.*)\s* (\d+)/);
         if (match) {            
             const [, text, optionNumber] = match;
             return {

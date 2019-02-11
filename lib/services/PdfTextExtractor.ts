@@ -1,15 +1,18 @@
 import * as pdf from "pdfjs-dist";
-import * as fs from 'fs';
-
 import { ITestTextExtractor } from "./ITestTextExtractor";
+import { createCanvas } from "canvas";
+import { spawn } from 'child_process';
+import * as fs from "fs";
+
 export class PdfTextExtractor implements ITestTextExtractor {
-    
+
     public constructor(private fileStream: Buffer) { }
 
     public async extractQuestions(): Promise<string[]> {
         const text = await extractPdfText(this.fileStream);
+        fs.writeFileSync('c:/personal/test.txt', text);
         const tokens: RegExpExecArray[] = [];
-        const exp = /\d+ שאלה מספר/g;
+        const exp = /שאלה מספר \d+/g;
         let result = exp.exec(text);
         while (result !== null) {
             tokens.push(result);
@@ -30,55 +33,51 @@ async function extractPdfText(dataBuffer) {
     // script does not work).
     pdf.disableWorker = true;
     let doc = await pdf.getDocument(dataBuffer);
-    let pages = [];
-    for (var i = 1; i <= doc.numPages; i++) {
-        const pageData = await doc.getPage(i);
-        const pageText = await render_page(pageData);
-        pages.push(pageText);
+    const firstPage = await doc.getPage(1);
+    var viewport = firstPage.getViewport(4);
+    const canvas = createCanvas(viewport.width, viewport.height * doc.numPages);
+    const context = canvas.getContext('2d');
+    const renderContext = {
+        canvasContext: context,
+        viewport: viewport
+    };
+    for (let i = 2; i <= doc.numPages; i++) {
+        const page = await doc.getPage(i);
+        await page.render(renderContext);
+        context.translate(0, viewport.height);
     }
+    const result = canvas.toBuffer('image/png', { compressionLevel: 1, filters: canvas.PNG_FILTER_NONE });
+    fs.writeFileSync('c:/personal/test.png', result);
     doc.destroy();
-    let ret = '';
-
-    for (const page of pages) {
-        for (const line of page) {
-            let phrase = {words: [], dir: line[0].dir };
-            let linePhrases = [phrase];            
-            for (const word of line) {
-                if (word.dir !== phrase.dir && word.str.length > 1) {                    
-                    phrase = {words: [word.str], dir: word.dir };
-                    linePhrases.push(phrase);
-                } else {
-                    phrase.words.push(word.str);
-                }                
-            }           
-            const words = linePhrases.map(ph=> ph.dir == "rtl" ? ph.words.reverse().join('') : ph.words.join(''));
-            const lineText = words.join('');
-            ret += lineText + "\n";
-        }
-    }
-    return ret;
+    const pageText = await extractImageText(result);
+    return pageText;
 }
 
-async function render_page(pageData) {
-    //check documents https://mozilla.github.io/pdf.js/
-    let render_options = {
-        //replaces all occurrences of whitespace with standard spaces (0x20). The default value is `false`.
-        normalizeWhitespace: true,
-        //do not attempt to combine same line TextItem's. The default value is `false`.
-        disableCombineTextItems: true
+
+async function extractImageText(buffer: Buffer) {
+    const child = spawn("C:/Program Files (x86)/Tesseract-OCR/tesseract.exe",
+        ["stdin", "stdout", "-l", "heb", "--dpi", "300", "--psm", "6"]);
+    child.stdin.write(buffer);
+    child.stdin.end(); /// this call seems necessary, at least with plain node.js executable
+    type childProcessExecResults = { code: Number, stderr: string, stdout: string };
+    const execResults = await new Promise<childProcessExecResults>
+        ((resolve, reject) => {
+            const result = { stdout: '', stderr: '', code: 0 };
+            child.stdout.on('data', function (data) {
+                result.stdout += data.toString()
+            });
+            child.stderr.on('data', function (data) {
+                result.stderr += data.toString()
+            });
+            child.on('close', function (code) {
+                result.code = code;
+                resolve(result)
+            });
+            child.on('error', function (err) { reject(err) });
+        });
+    if (execResults.code !== 0) {
+        throw new Error(`Process exited with code ${execResults.code},
+                        STD_OUT:\n${execResults.stdout}\n\nSTD_ERR:\n${execResults.stderr}`)
     }
-    const textContent = await pageData.getTextContent(render_options);
-    let lastY, line = [];
-    const lines = [];    
-    for (let item of textContent.items) {
-        const [,,,,, y] = item.transform;
-        if (lastY == y || !lastY) {
-            line.push(item);
-        } else {
-            lines.push(line);
-            line = [item];
-        }
-        lastY = y;
-    }
-    return lines;
+    return execResults.stdout;
 }
